@@ -15,14 +15,6 @@ $requete=$db->query("SELECT * from Personnage");
 $requete->setFetchMode(PDO::FETCH_CLASS,"Personnage");
 $personnages = $requete->fetchAll();
 
-
-
-//EFFACER
-/* if (??) {
-    $requeteD = $db->query("DELETE FROM Personnage WHERE id=$personnage->getId()");
-    
-}*/
-
 if(isset($_POST['delete'])){
     $id_efface = (int)$_POST['delete'];
     echo $id_efface;
@@ -48,13 +40,14 @@ if(isset($_POST['delete'])){
     <h1 style="color:white">Liste des personnages </h1>
 </div>
 
-<div class="container-fluid d-flex justify-content-center align-items-start mt-3"> 
+<div class="container-fluid d-flex justify-content-center align-items-start my-3"> 
+    <div class="row">
     <form action="index.php" method="get">
         <input type="text" placeholder="Recherche" name="recherche" id="recherche" >
         <button type="submit">Rechercher</button>
     </form>
 
-</div>
+
 
 <div class="container mt-4">
     
@@ -72,6 +65,8 @@ if(isset($_POST['delete'])){
                 <button type="button" id="nomFermer" class="btn btn-secondary">Annuler</button>
             </div>
         </form>
+        </div></div>
+        </div>
     </div>
 </div>
 <?php 

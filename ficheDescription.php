@@ -21,6 +21,16 @@ $requete->setFetchMode(PDO::FETCH_CLASS,"Description");
 $descriptions = $requete->fetchAll();
 
 
+if(isset($_POST['delete'])){
+    $id_efface = (int)$_POST['delete'];
+    echo $id_efface;
+    $requeteDel = $db->query("DELETE FROM Description WHERE id = $id_efface ");   
+    
+    // Redirection pour actualiser la page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -28,14 +38,16 @@ $descriptions = $requete->fetchAll();
 <head>
    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Liste caracteres</title>
+    <title>Liste description</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<!-- Modification des infos de bases -->
-<div class="container d-flex p-2">
-    <h1 class="row">Formulaire physique</h1>
+<div class="container-fluid d-flex justify-content-center align-items-start bg-primary p-3  ">
+    <h1 style="color:white">Liste descriptions </h1>
+</div>
+
+<div class="container d-flex justify-content-center align-items-start p-3 mt-3 ">
     <form action="ficheDescription.php" method="post" class="row">
         <div class="row">
             <label for="genre" ><b>Genre</b></label>
@@ -105,6 +117,12 @@ $descriptions = $requete->fetchAll();
                         <td>".$description->getTaille()."</td>
                         <td>".$description->getPhysique()."</td>
                         <td>".$description->getCaractere()."</td>
+                        <td>
+                            <form method=\"post\" onsubmit=\"return confirm('Êtes vous sûr de supprimer ce personnage ?');\">
+                                <input type=\"hidden\" name=\"delete\" value=". $description->getId().">
+                                <button type=\"submit\" class=\"btn btn-danger btn-sm\">Effacer l'histoire</button>
+                            </form>
+                        </td>
                     </tr>";
                 }
 

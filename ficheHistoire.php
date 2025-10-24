@@ -44,9 +44,11 @@ if(isset($_POST['delete'])){
 <body>
 
 <!-- Modification des infos de bases -->
-<div class="container d-flex p-2">
-    <h1 class="row">Formulaire histoire</h1>
-<div>
+<div class="container-fluid d-flex justify-content-center align-items-start bg-primary p-3  ">
+    <h1 style="color:white">Liste histoires </h1>
+</div>
+
+<div class="container d-flex justify-content-center align-items-start p-3 mt-3 ">
     <form action="ficheHistoire.php" method="post" class="row">
         <div class="row">
             <label for="type" ><b>Type/Titre: Ce qui vous permettra d'identifier l'histoire. (Notes,idées,backstory,fun-facts...) </b></label>
@@ -67,7 +69,7 @@ if(isset($_POST['delete'])){
 
         <input type="hidden" name="idPersonnage" value="<?= $idPersonnage ?>">
 
-        <div class="row"></div>
+        <div class="mt-3"></div>
          <button type="submit">Confirmer</button>
         </div>
     </form>
