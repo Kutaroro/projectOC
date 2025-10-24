@@ -58,24 +58,17 @@ $personnages = $requete->fetchAll();
 </head>
 <body>
     
-
-<?php
-
-$personnage1= new Personnage("Nom1");
-?>
-
-
 <div class="container-fluid d-flex justify-content-center align-items-start bg-primary p-3  ">
     <h1 style="color:white">Liste des personnages </h1>
 </div>
 
 <div class="container mt-4">
-    <!-- bouton pour afficher la ligne de formulaire -->
+    
     <button id="nomBouton" class="btn btn-primary mb-3">Ajouter un personnage</button>
 
-    <!-- ligne de formulaire masquée par défaut -->
+
     <div id="nomFormulaire" class="card p-3 mb-3" style="display:none; max-width:600px;">
-        <form method="post" class="row g-2 align-items-center">
+        <form method="get" name="nom" class="row g-2 align-items-center">
             <div class="col">
                 <label class="form-label visually-hidden" for="nom">Nom</label>
                 <input type="text" name="nom" id="nom" class="form-control" placeholder="Nom du personnage" required>
@@ -87,6 +80,28 @@ $personnage1= new Personnage("Nom1");
         </form>
     </div>
 </div>
+
+<?php
+    if(isset($_GET["nom"])){
+         try {
+        
+        $nom = trim($_GET['nom']);
+
+
+        $nouveauPersonnage = new Personnage($nom);
+
+        $requete = $db->prepare("INSERT INTO Personnage (nom) VALUES (:nom)");
+        $nom = "%" . $_GET["nom"] . "%";
+        $requete->bindParam(':nom', $nom, PDO::PARAM_STR);
+        $requete->execute([$nom]);
+
+    } catch(PDOException $e) {
+        $message = "Erreur lors de la création du personnage : " . $e->getMessage();
+    }
+    }
+    ?>
+
+
 
 <div class="container d-flex justify-content-center align-items-start py-5">
     <div class="table-responsive w-75"> 
@@ -105,8 +120,8 @@ $personnage1= new Personnage("Nom1");
                 echo "<tr>
                         <td>".$client->getId()." </td>
                         <td>".$client->getNom()." </td>
-                        <td>".$client->getHistoire()."<a href='fiche_personnage.php?id=".$personnage->getId()."' class='text-decoration-none'> </td>
-                        <td>".$client->getDescription()." </td>
+                        <td>".$client->getHistoire()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'> </td>
+                        <td>".$client->getDescription()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'></td>
                     </tr>";
                 }
 
