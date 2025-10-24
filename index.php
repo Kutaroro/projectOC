@@ -9,39 +9,7 @@ $pass="";
 $dbname="OC_Personnage";
 $host="localhost:3307";
 
-
-try {
-     
-    $db = new PDO("mysql:host=$host", $user, $pass);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // On verifie que la base n'existe pas déjà
-    $test = $db->query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbname'");
-    $bddExiste = $test->fetchColumn();
-    
-    if (!$bddExiste) { // Pour être sur que la BDD soit créee qu'une fois
-        $sql = "CREATE DATABASE $dbname";
-        $db->exec($sql);
-       // echo "BDD Crée";
-    } /*else {
-        echo "La BDD existe";
-    }*/
-    
-    $db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-}catch(PDOException $e) {
-    echo "" . $e->getMessage();
-}
-
-
-$requete=$db->query("CREATE TABLE IF NOT EXISTS Personnage (
-                            Id int NOT NULL AUTO_INCREMENT,
-                            Nom varchar(255) NOT NULL,
-                            idHistoire int,
-                            idDescription int,
-                            PRIMARY KEY (id)
-                        );");
+$db=new PDO("mysql:host=$host;dbname=$dbname",$user,$pass);
 
 $requete=$db->query("SELECT * from Personnage");
 $requete->setFetchMode(PDO::FETCH_CLASS,"Personnage");
@@ -68,40 +36,37 @@ $personnages = $requete->fetchAll();
 
 
     <div id="nomFormulaire" class="card p-3 mb-3" style="display:none; max-width:600px;">
-        <form method="get" name="nom" class="row g-2 align-items-center">
+        <form method="post" name="nom" class="row g-2 align-items-center">
             <div class="col">
                 <label class="form-label visually-hidden" for="nom">Nom</label>
                 <input type="text" name="nom" id="nom" class="form-control" placeholder="Nom du personnage" required>
             </div>
             <div class="col-auto">
-                <button type="submit" name="create_personnage" class="btn btn-success">Créer</button>
+                <button type="submit" name="creer_perso" class="btn btn-success">Créer</button>
                 <button type="button" id="nomFermer" class="btn btn-secondary">Annuler</button>
             </div>
         </form>
     </div>
 </div>
-
-<?php
-    if(isset($_GET["nom"])){
-         try {
+<?php 
+    if(isset($_POST["nom"])){
+            try {
         
-        $nom = trim($_GET['nom']);
+        $nom = trim($_POST['nom']);
 
-
-        $nouveauPersonnage = new Personnage($nom);
-
-        $requete = $db->prepare("INSERT INTO Personnage (nom) VALUES (:nom)");
-        $nom = "%" . $_GET["nom"] . "%";
-        $requete->bindParam(':nom', $nom, PDO::PARAM_STR);
+        $requete = $db->prepare("INSERT INTO Personnage (nom) VALUES (?)");
         $requete->execute([$nom]);
+
+        // Si je veux pas me retrouver avec 50 fois la même ligne en actualisant
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+
 
     } catch(PDOException $e) {
         $message = "Erreur lors de la création du personnage : " . $e->getMessage();
     }
     }
-    ?>
-
-
+?>
 
 <div class="container d-flex justify-content-center align-items-start py-5">
     <div class="table-responsive w-75"> 
@@ -118,10 +83,10 @@ $personnages = $requete->fetchAll();
                 <?php 
                 foreach($personnages as $personnage){
                 echo "<tr>
-                        <td>".$client->getId()." </td>
-                        <td>".$client->getNom()." </td>
-                        <td>".$client->getHistoire()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'> </td>
-                        <td>".$client->getDescription()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'></td>
+                        <td>".$personnage->getId()." </td>
+                        <td>".$personnage->getNom()." </td>
+                        <td>".$personnage->getHistoire()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
+                        <td>".$personnage->getDescription()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
                     </tr>";
                 }
 

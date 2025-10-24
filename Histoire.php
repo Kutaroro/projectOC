@@ -6,7 +6,7 @@ class Histoire{
     private $type;
     private $univers; // A quelle histoire le personnage appartient
     private $resume; // Le personnage en quelques lignes
-    private $histoires; // Morceaux d'histoires
+    private $histoire; // Histoire plus longue 
     
     
     public function __construct(){
@@ -24,8 +24,8 @@ class Histoire{
     public function getResume(){
         return $this->resume;
     }
-    public function getHistoires(){
-        return $this->histoires;
+    public function getHistoire(){
+        return $this->histoire;
     }
     public function setId($id){
         $this->id = $id;
@@ -41,7 +41,7 @@ class Histoire{
     public function setResume($resume){
         $this->resume = $resume;
     }
-    public function setHistoires($histoire){
+    public function setHistoire($histoire){
         $this->histoire = $histoire;
     }
 

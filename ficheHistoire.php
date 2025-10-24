@@ -4,22 +4,22 @@ include("Personnage.php");
 include("Histoire.php");
 include("Description.php");
 
-try {
-    $db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Récupération de l'ID depuis l'URL
-    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-    
-    // Requête pour obtenir les détails du histoire
-    $requete = $db->prepare("SELECT * FROM Histoire WHERE Id = ?");
-    $requete->execute([$id]);
-    $requete->setFetchMode(PDO::FETCH_CLASS, "Histoire");
-    $histoire = $requete->fetch();
 
-} catch(PDOException $e) {
-    echo "" . $e->getMessage();
-}
+$user="root";
+$pass="";
+$dbname="OC_Personnage";
+$host="localhost:3307";
+
+
+$db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+//ON prend l'id du personnage qui était dans l'url
+$idPersonnage = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+$requete = $db->query("SELECT * FROM Histoire as h INNER JOIN Personnage as p on h.idPersonnage=p.id WHERE IdPersonnage = $idPersonnage");
+$requete->setFetchMode(PDO::FETCH_CLASS,"Histoire");
+$histoires = $requete->fetchAll();
 
 
 ?>
@@ -37,7 +37,7 @@ try {
 <!-- Modification des infos de bases -->
 <div class="container d-flex p-2">
     <h1 class="row">Formulaire histoire</h1>
-    <form action="formulaire.php" method="post" class="row">
+    <form action="ficheHistoire.php" method="post" class="row">
         <div class="row">
             <label for="type" ><b>type</b></label>
             <input type="text" placeholder="type" name="type" id="type" included>
@@ -50,21 +50,64 @@ try {
             <label for="resume" ><b>resume</b></label>
             <input type="text" placeholder="resume" name="resume" id="resume" included>
         </div>
+         <div class="row">
+            <label for="histoire" ><b>histoire</b></label>
+            <input type="text" placeholder="histoire" name="histoire" id="histoire" included>
+        </div>
         <div class="row"></div>
          <button type="submit">Confirmer</button>
         </div>
     </form>
 </div>
 
-<div>
-    <div >
-            <label for="histoire" ><b>Rajouter une histoire</b></label>
-            <input type="text" placeholder="histoire" name="histoire" id="histoire" included>
-        </div>
-        <div ></div>
-         <button type="submit">Confirmer</button>
-        </div>
-</div>
+
+<?php 
+    if(isset($_POST["histoire"])){ // Comment faire pour tout le formulaire?
+        $type=trim($_POST['type']);
+        $univers=trim($_POST['univers']);
+        $resume=trim($_POST['histoire']);
+        $histoire = trim($_POST['histoire']);
+
+        $requete = $db->prepare("INSERT INTO Histoire (idPersonnage,type,univers,resume,histoire) VALUES (?,?,?,?,?,?)");
+        $requete->execute([$idPersonnage,$type,$univers,$resume,$histoire]);
+
+        // Si je veux pas me retrouver avec 50 fois la même ligne en actualisant
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+
+
+    }
+?>
+
+
+<div class="container d-flex justify-content-center align-items-start py-5">
+    <div class="table-responsive w-75"> 
+        <table class="table table-striped table-bordered mx-auto">
+            <thead class="table-dark">
+                <tr>
+                    <th>TODO FLEMME</th>
+                    <th>TODO FLEMME</th>
+                    <th>TODO FLEMME</th>
+                    <th>TODO FLEMME</th>
+                    <th>TODO FLEMME</th>
+            </thead>
+            <tbody>
+
+                <?php 
+                foreach($histoires as $histoire){
+                echo "<tr>
+                        <td>".$histoire->getId()." </td>
+                        <td>".$histoire->getType()." </td>
+                        <td>".$histoire->getUnivers()."</td>
+                        <td>".$histoire->getResume()."</td>
+                        <td>".$histoire->getHistoire()."</td>
+                    </tr>";
+                }
+
+                ?>
+               
+
+            </tbody>
 
     
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
