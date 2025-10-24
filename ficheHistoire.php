@@ -21,6 +21,16 @@ $requete->setFetchMode(PDO::FETCH_CLASS,"Histoire");
 $histoires = $requete->fetchAll();
 
 
+if(isset($_POST['delete'])){
+    $id_efface = (int)$_POST['delete'];
+    echo $id_efface;
+    $requeteDel = $db->query("DELETE FROM Histoire WHERE id = $id_efface ");   
+    
+    // Redirection pour actualiser la page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -36,21 +46,22 @@ $histoires = $requete->fetchAll();
 <!-- Modification des infos de bases -->
 <div class="container d-flex p-2">
     <h1 class="row">Formulaire histoire</h1>
+<div>
     <form action="ficheHistoire.php" method="post" class="row">
         <div class="row">
-            <label for="type" ><b>type</b></label>
+            <label for="type" ><b>Type/Titre: Ce qui vous permettra d'identifier l'histoire. (Notes,idées,backstory,fun-facts...) </b></label>
             <input type="text" placeholder="type" name="type" id="type" included>
         </div>
         <div class="row">
-            <label for="univers" ><b>Univers</b></label>
+            <label for="univers" ><b>Univers/Monde du personnage. Dans quel histoire il est.</b></label>
             <input type="text" placeholder="univers" name="univers" id="univers" included>
         </div>
         <div class="row">
-            <label for="description" ><b>description</b></label>
+            <label for="description" ><b>Description courte en quelques lignes ou prises de notes</b></label>
             <input type="text" placeholder="description" name="description" id="description" included>
         </div>
          <div class="row">
-            <label for="histoire" ><b>histoire</b></label>
+            <label for="histoire" ><b>Histoire complète ou détails en plus si prise de notes</b></label>
             <input type="text" placeholder="histoire" name="histoire" id="histoire" included>
         </div>
 
@@ -60,6 +71,7 @@ $histoires = $requete->fetchAll();
          <button type="submit">Confirmer</button>
         </div>
     </form>
+    </div>
 </div>
 
 
@@ -105,6 +117,12 @@ $histoires = $requete->fetchAll();
                         <td>".$histoire->getUnivers()."</td>
                         <td>".$histoire->getDescription()."</td>
                         <td>".$histoire->getHistoire()."</td>
+                        <td>
+                            <form method=\"post\" onsubmit=\"return confirm('Êtes vous sûr de supprimer ce personnage ?');\">
+                                <input type=\"hidden\" name=\"delete\" value=". $histoire->getId().">
+                                <button type=\"submit\" class=\"btn btn-danger btn-sm\">Effacer l'histoire</button>
+                            </form>
+                        </td>
                     </tr>";
                 }
 

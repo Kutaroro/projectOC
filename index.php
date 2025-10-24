@@ -15,6 +15,24 @@ $requete=$db->query("SELECT * from Personnage");
 $requete->setFetchMode(PDO::FETCH_CLASS,"Personnage");
 $personnages = $requete->fetchAll();
 
+
+
+//EFFACER
+/* if (??) {
+    $requeteD = $db->query("DELETE FROM Personnage WHERE id=$personnage->getId()");
+    
+}*/
+
+if(isset($_POST['delete'])){
+    $id_efface = (int)$_POST['delete'];
+    echo $id_efface;
+    $requeteDel = $db->query("DELETE FROM Personnage WHERE id = $id_efface ");   
+    
+    // Redirection pour actualiser la page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -62,8 +80,7 @@ $personnages = $requete->fetchAll();
 
         $requete = $db->prepare("INSERT INTO Personnage (nom) VALUES (?)");
         $requete->execute([$nom]);
-
-        // Si je veux pas me retrouver avec 50 fois la même ligne en actualisant
+        // Redirection pour actualiser la page
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
@@ -107,6 +124,7 @@ $personnages = $requete->fetchAll();
                     $personnages = $requeteR->fetchAll();
                 }
 
+
                 // Fonctionnement normal sans recherche
                 foreach($personnages as $personnage){
 
@@ -144,16 +162,14 @@ $personnages = $requete->fetchAll();
                             <td>".$personnage->getNom()." </td>
                             <td>".implode(" ", $histoireF)."<br/><a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
                             <td>".implode(" ", $descriptionF)."<br/><a href='ficheDescription.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
-                            <td> Delete</td>
+                            <td>
+                                <form method=\"post\" onsubmit=\"return confirm('Êtes vous sûr de supprimer ce personnage ?');\">
+                                    <input type=\"hidden\" name=\"delete\" value=". $personnage->getId().">
+                                    <button type=\"submit\" class=\"btn btn-danger btn-sm\">Effacer le personnage</button>
+                                </form>
+                            </td>
                         </tr>";
                 }
-
-                //EFFACER
-                if (??) {
-                    $requeteR = $db->query("DELETE FROM Personnage WHERE id=$personnage->getId()");
-                 
-                }
-
                 ?>
                
 
