@@ -54,7 +54,13 @@ class Description{
     public function setCaractere($caractere){
         $this->caractere = $caractere;
     }
-    
+
+    public function __toString(){
+        return $this->genre." ".$this->race."~".$this->taille."
+        Description physique:".$this->physique."
+        Personalité:".$this->caractere;  
+
+    }
 }
 
 
