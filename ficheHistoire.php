@@ -1,4 +1,5 @@
 <?php
+//TODO METTRE UN LIEN POUR REVENIR A LA FICHE PERSONNAGE
 
 include("Personnage.php");
 include("Histoire.php");

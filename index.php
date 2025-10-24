@@ -36,25 +36,23 @@ if(isset($_POST['delete'])){
 </head>
 <body>
     
-<div class="container-fluid d-flex justify-content-center align-items-start bg-primary p-3  ">
-    <h1 style="color:white">Liste des personnages </h1>
-</div>
-
-<div class="container-fluid d-flex justify-content-center align-items-start my-3"> 
-    <div class="row">
+<div class="container-fluid d-flex justify-content-center align-items-center bg-primary p-3  ">
+    <div class="col-8 px-3"><h1 style="color:white">Liste des personnages </h1></div>
+    
+    <div class="col">
     <form action="index.php" method="get">
         <input type="text" placeholder="Recherche" name="recherche" id="recherche" >
         <button type="submit">Rechercher</button>
     </form>
+</div>
+</div>
 
-
-
-<div class="container mt-4">
+<div class="container-fluid d-flex justify-content-center align-items-center m-3"> 
     
     <button id="nomBouton" class="btn btn-primary mb-3">Ajouter un personnage</button>
 
-
-    <div id="nomFormulaire" class="card p-3 mb-3" style="display:none; max-width:600px;">
+    
+    <div id="nomFormulaire" class="card p-3 m-3" style="display:none; max-width:600px;">
         <form method="post" name="nom" class="row g-2 align-items-center">
             <div class="col">
                 <label class="form-label visually-hidden" for="nom">Nom</label>
@@ -65,8 +63,8 @@ if(isset($_POST['delete'])){
                 <button type="button" id="nomFermer" class="btn btn-secondary">Annuler</button>
             </div>
         </form>
-        </div></div>
-        </div>
+        
+        
     </div>
 </div>
 <?php 
@@ -152,8 +150,8 @@ if(isset($_POST['delete'])){
                     }
 
 
-                    echo "<tr>
-                            <td>".$personnage->getId()." </td>
+                    echo "<tr >
+                            <td >".$personnage->getId()." </td>
                             <td>".$personnage->getNom()." </td>
                             <td>".implode(" ", $histoireF)."<br/><a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
                             <td>".implode(" ", $descriptionF)."<br/><a href='ficheDescription.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
