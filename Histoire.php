@@ -5,8 +5,10 @@ class Histoire{
     private $id;
     private $type;
     private $univers; // A quelle histoire le personnage appartient
-    private $resume; // Le personnage en quelques lignes
+    private $description; // Le personnage en quelques lignes
     private $histoire; // Histoire plus longue 
+
+    private $idPersonnage;
     
     
     public function __construct(){
@@ -21,11 +23,14 @@ class Histoire{
     public function getUnivers(){
         return $this->univers;
     }
-    public function getResume(){
-        return $this->resume;
+    public function getDescription(){
+        return $this->description;
     }
     public function getHistoire(){
         return $this->histoire;
+    }
+    public function getIDPersonnage(){
+        return $this->idPersonnage;
     }
     public function setId($id){
         $this->id = $id;
@@ -38,11 +43,14 @@ class Histoire{
     public function setUnivers($univers){
         $this->univers = $univers;
     }
-    public function setResume($resume){
-        $this->resume = $resume;
+    public function setDescription($description){
+        $this->description = $description;
     }
     public function setHistoire($histoire){
         $this->histoire = $histoire;
+    }
+    public function setIDPersonnage($idPersonnage){
+        $this->idPersonnage = $idPersonnage;
     }
 
    

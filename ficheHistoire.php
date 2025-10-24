@@ -47,13 +47,16 @@ $histoires = $requete->fetchAll();
             <input type="text" placeholder="univers" name="univers" id="univers" included>
         </div>
         <div class="row">
-            <label for="resume" ><b>resume</b></label>
-            <input type="text" placeholder="resume" name="resume" id="resume" included>
+            <label for="description" ><b>description</b></label>
+            <input type="text" placeholder="description" name="description" id="description" included>
         </div>
          <div class="row">
             <label for="histoire" ><b>histoire</b></label>
             <input type="text" placeholder="histoire" name="histoire" id="histoire" included>
         </div>
+
+        <input type="hidden" name="idPersonnage" value="<?= $idPersonnage ?>">
+
         <div class="row"></div>
          <button type="submit">Confirmer</button>
         </div>
@@ -63,16 +66,18 @@ $histoires = $requete->fetchAll();
 
 <?php 
     if(isset($_POST["histoire"])){ // Comment faire pour tout le formulaire?
+        $idPersonnage = isset($_POST['idPersonnage']) ? (int)$_POST['idPersonnage'] : 0;
         $type=trim($_POST['type']);
         $univers=trim($_POST['univers']);
-        $resume=trim($_POST['histoire']);
+        $description=trim($_POST['description']);
         $histoire = trim($_POST['histoire']);
 
-        $requete = $db->prepare("INSERT INTO Histoire (idPersonnage,type,univers,resume,histoire) VALUES (?,?,?,?,?,?)");
-        $requete->execute([$idPersonnage,$type,$univers,$resume,$histoire]);
+        $requete = $db->prepare("INSERT INTO Histoire (idPersonnage,type,univers,description,histoire) VALUES (?,?,?,?,?)");
+        $requete->execute([$idPersonnage,$type,$univers,$description,$histoire]);
 
         // Si je veux pas me retrouver avec 50 fois la même ligne en actualisant
-        header("Location: " . $_SERVER['PHP_SELF']);
+        //Voulais mettre dans le form mais ça a tout cassé ._. donc on va rester avec ça
+       header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $idPersonnage);
         exit();
 
 
@@ -99,7 +104,7 @@ $histoires = $requete->fetchAll();
                         <td>".$histoire->getId()." </td>
                         <td>".$histoire->getType()." </td>
                         <td>".$histoire->getUnivers()."</td>
-                        <td>".$histoire->getResume()."</td>
+                        <td>".$histoire->getDescription()."</td>
                         <td>".$histoire->getHistoire()."</td>
                     </tr>";
                 }
