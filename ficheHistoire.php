@@ -2,7 +2,6 @@
 
 include("Personnage.php");
 include("Histoire.php");
-include("Description.php");
 
 
 $user="root";

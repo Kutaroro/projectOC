@@ -8,33 +8,32 @@ class Description{
     private $race;
     private $physique;
     private $caractere;
+    private $idPersonnage;
 
-    public function __construct( $genre, $taille, $race, $physique, $caractere){
-        $this->genre = $genre;
-        $this->taille = $taille;   
-        $this->race = $race;
-        $this->physique = $physique;
-        $this->caractere = $caractere;
+    public function __construct(){
 
     }
 
     public function getId(){
         return $this->id;
     }
-    public function getGenre(){
+    public function getGenre(){  
         return $this->genre;
     }
-    public function getTaille(){
+    public function getTaille(){   
         return $this->taille;
     }
-    public function getRace(){
+    public function getRace(){   
         return $this->race;
     }
-    public function getPhysique(){
+    public function getPhysique(){ // peut changer 
         return $this->physique;
     }
-    public function getCaractere(){
+    public function getCaractere(){// peut changer 
         return $this->caractere;
+    }
+    public function getIDpersonnage(){
+        return $this->idPersonnage;
     }
     public function setId($id){
         $this->id = $id;
@@ -54,7 +53,9 @@ class Description{
     public function setCaractere($caractere){
         $this->caractere = $caractere;
     }
-
+    public function setIdpersonnage($idpersonnage){
+        $this->idpersonnage = $idpersonnage;
+    }
     public function __toString(){
         return $this->genre." ".$this->race."~".$this->taille."
         Description physique:".$this->physique."

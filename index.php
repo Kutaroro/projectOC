@@ -30,6 +30,14 @@ $personnages = $requete->fetchAll();
     <h1 style="color:white">Liste des personnages </h1>
 </div>
 
+<div class="container-fluid d-flex justify-content-center align-items-start mt-3"> 
+    <form action="index.php" method="get">
+        <input type="text" placeholder="Recherche" name="recherche" id="recherche" >
+        <button type="submit">Rechercher</button>
+    </form>
+
+</div>
+
 <div class="container mt-4">
     
     <button id="nomBouton" class="btn btn-primary mb-3">Ajouter un personnage</button>
@@ -49,9 +57,7 @@ $personnages = $requete->fetchAll();
     </div>
 </div>
 <?php 
-    if(isset($_POST["nom"])){
-            try {
-        
+    if(isset($_POST["nom"])){        
         $nom = trim($_POST['nom']);
 
         $requete = $db->prepare("INSERT INTO Personnage (nom) VALUES (?)");
@@ -60,11 +66,6 @@ $personnages = $requete->fetchAll();
         // Si je veux pas me retrouver avec 50 fois la même ligne en actualisant
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
-
-
-    } catch(PDOException $e) {
-        $message = "Erreur lors de la création du personnage : " . $e->getMessage();
-    }
     }
 ?>
 
@@ -73,21 +74,84 @@ $personnages = $requete->fetchAll();
         <table class="table table-striped table-bordered mx-auto">
             <thead class="table-dark">
                 <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Histoire</th>
-                    <th>Description</th>
+                    <th>ID</th>
+                    <th>Nom/ Nom de code</th>
+                    <th>Toutes les histoires</th>
+                    <th>Toutes les descriptions</th>
             </thead>
             <tbody>
 
                 <?php 
+
+                // RECHERCHE
+                if (isset($_GET["recherche"])) {
+                    $recherche = '%' . $_GET["recherche"] . '%';
+
+                    $sql = "SELECT DISTINCT p.* FROM Personnage p
+                            WHERE p.Nom LIKE :recherche
+                            OR EXISTS (
+                                SELECT 1 FROM Description d
+                                WHERE d.idPersonnage = p.Id
+                                    AND (d.genre LIKE :recherche OR d.race LIKE :recherche)
+                            )
+                            OR EXISTS (
+                                SELECT 1 FROM Histoire h
+                                WHERE h.idPersonnage = p.Id
+                                    AND (h.univers LIKE :recherche OR h.type LIKE :recherche)
+                            )";
+
+                    $requeteR = $db->prepare($sql);
+                    $requeteR->bindParam(':recherche', $recherche, PDO::PARAM_STR);
+                    $requeteR->execute();
+                    $requeteR->setFetchMode(PDO::FETCH_CLASS, "Personnage");
+                    $personnages = $requeteR->fetchAll();
+                }
+
+                // Fonctionnement normal sans recherche
                 foreach($personnages as $personnage){
-                echo "<tr>
-                        <td>".$personnage->getId()." </td>
-                        <td>".$personnage->getNom()." </td>
-                        <td>".$personnage->getHistoire()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
-                        <td>".$personnage->getDescription()."<a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
-                    </tr>";
+
+                    $idPersonnage = $personnage->getId(); // ou depuis $_GET['id']
+
+                    $requeteH = $db->query("SELECT * FROM Histoire WHERE idPersonnage = $idPersonnage ORDER BY id ASC");
+                    $requeteH->setFetchMode(PDO::FETCH_CLASS,"Histoire");
+                    $histoires = $requeteH->fetchAll();
+
+                    $histoireF = [];
+                    foreach($histoires as $histoire) {
+                        $histoireF[] = $histoire->getType()."<br>";
+                        $histoireF[] = $histoire->getUnivers()."<br>";
+                        $histoireF[]="_______________<br/>";
+
+                    }
+
+                    $requeteD = $db->query("SELECT * FROM Description WHERE idPersonnage = $idPersonnage ORDER BY id ASC");
+                    $requeteD->setFetchMode(PDO::FETCH_CLASS,"Description");
+                    $descriptions = $requeteD->fetchAll();
+
+                    $descriptionF = [];
+                    foreach($descriptions as $description) {
+                        $descriptionF[] = $description->getGenre();
+                        $descriptionF[] = $description->getRace()."~";
+                        $descriptionF[] = $description->getTaille()."<br/>";
+                        $descriptionF[] = substr($description->getPhysique(), 0, 12)." ...<br/>";             
+                        $descriptionF[] = substr($description->getCaractere(), 0, 12)." ...<br/>";  
+                        $descriptionF[]="_______________<br/>";
+                    }
+
+
+                    echo "<tr>
+                            <td>".$personnage->getId()." </td>
+                            <td>".$personnage->getNom()." </td>
+                            <td>".implode(" ", $histoireF)."<br/><a href='ficheHistoire.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
+                            <td>".implode(" ", $descriptionF)."<br/><a href='ficheDescription.php?id=".$personnage->getId()."' class='text-decoration-none'>Voir plus/modifier</a></td>
+                            <td> Delete</td>
+                        </tr>";
+                }
+
+                //EFFACER
+                if (??) {
+                    $requeteR = $db->query("DELETE FROM Personnage WHERE id=$personnage->getId()");
+                 
                 }
 
                 ?>
